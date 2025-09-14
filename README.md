@@ -63,3 +63,63 @@ Email-Assistant/
 ```
 
 ---
+
+
+## 🛠️ Technologies Used
+
+- **Backend**: Python, Flask, Gemini API, Google Gmail API, SQLite, APScheduler  
+- **Frontend**: Next.js, React, Tailwind CSS  
+- **Core Concepts**: NLP, RAG, REST APIs  
+
+---
+
+## ⚙️ Getting Started
+
+### ✅ Prerequisites
+- Python **3.9+**
+- Node.js and npm/yarn
+- Google Cloud Platform project with **Gmail API enabled**
+- Access to the **Gemini API**
+
+---
+
+### 🔧 Installation & Setup
+
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/your-username/Email-Assistant.git
+cd Email-Assistant
+```
+
+#### 2. Backend Setup
+```bash
+cd backend
+python -m venv venv
+# Activate the virtual environment
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+ Configure frontend environment variables if required.
+
+ #### ▶️ Running the Application
+ #### Start the Backend (Flask)
+```bash
+cd backend
+python -m uvicorn backend.app:app --reload -- 8000
+```
+
+#### Start the Frontend (Next.js)
+
+```bash
+cd inbox-iq
+npm run dev
+```
+#### 📜 License
+
+This project is licensed under the MIT License.
+
+
+Do you want me to also **add shields.io badges** (like Python version, Next.js, MIT License) at the top of the README so it looks more professional on GitHub?
+
+
