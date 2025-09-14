@@ -1,0 +1,72 @@
+===================================================================
+General Project & Operating System Files
+===================================================================
+OS-generated files
+.DS_Store
+Thumbs.db
+
+Private keys
+*.pem
+
+Database files
+inbox.db
+
+===================================================================
+Python / Backend
+===================================================================
+Environment variables and credentials
+.env
+backend/credentials.json
+backend/token.pkl
+
+Python cache and compiled files
+**/pycache/
+*.pyc
+
+Pytest cache folder
+**/.pytest_cache/
+
+Virtual environments
+/venv/
+/.venv/
+/env/
+/myenv/
+
+===================================================================
+Next.js / Frontend (inbox-iq)
+===================================================================
+Dependencies
+inbox-iq/node_modules/
+inbox-iq/.pnp
+inbox-iq/.pnp.*
+inbox-iq/.yarn/*
+!inbox-iq/.yarn/patches
+!inbox-iq/.yarn/plugins
+!inbox-iq/.yarn/releases
+!inbox-iq/.yarn/versions
+
+Build and output directories
+inbox-iq/build/
+inbox-iq/.next/
+inbox-iq/out/
+inbox-iq/note.txt
+
+Local environment variables (safer to ignore all .env variants)
+inbox-iq/.env*
+!inbox-iq/.env.example
+
+Log files
+inbox-iq/npm-debug.log*
+inbox-iq/yarn-debug.log*
+inbox-iq/yarn-error.log*
+inbox-iq/.pnpm-debug.log*
+
+Testing
+inbox-iq/coverage/
+
+Vercel deployment folder
+inbox-iq/.vercel/
+
+TypeScript cache
+inbox-iq/*.tsbuildinfo
+inbox-iq/next-env.d.ts
