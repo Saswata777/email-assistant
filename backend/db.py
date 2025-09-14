@@ -1,7 +1,10 @@
 # db.py
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
+
+DB_PATH = os.getenv("DATABASE_PATH", "./inbox.db")
 
 DATABASE_URL = "sqlite:///./inbox.db"
 
@@ -42,7 +45,8 @@ class Email(Base):
 
 def init_db():
     """Create tables in the database"""
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
     
 
 # 3. NEW: Functions to manage users
