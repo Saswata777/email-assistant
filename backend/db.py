@@ -6,7 +6,7 @@ from datetime import datetime
 
 DB_PATH = os.getenv("DATABASE_PATH", "./inbox.db")
 
-DATABASE_URL = "sqlite:///./inbox.db"
+DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
