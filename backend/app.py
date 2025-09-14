@@ -75,9 +75,9 @@ def get_user_credentials(user_google_id: str) -> Credentials:
     return Credentials.from_authorized_user_info(
         info={
             "refresh_token": user.refresh_token,
-            "client_id": CLIENT_CONFIG["client_id"],
-            "client_secret": CLIENT_CONFIG["client_secret"],
-            "token_uri": CLIENT_CONFIG["token_uri"],
+            "client_id": CLIENT_CONFIG["web"]["client_id"],
+            "client_secret": CLIENT_CONFIG["web"]["client_secret"],
+            "token_uri": CLIENT_CONFIG["web"]["token_uri"],
         },
         scopes=SCOPES
     )
