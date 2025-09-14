@@ -115,11 +115,6 @@ python -m uvicorn backend.app:app --reload -- 8000
 cd inbox-iq
 npm run dev
 ```
-#### 📜 License
 
-This project is licensed under the MIT License.
-
-
-Do you want me to also **add shields.io badges** (like Python version, Next.js, MIT License) at the top of the README so it looks more professional on GitHub?
 
 
