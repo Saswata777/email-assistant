@@ -78,7 +78,7 @@
 import React, { useState, useEffect } from 'react';
 
 // For consistency, you might want to import this from your api.js file
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

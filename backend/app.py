@@ -2,6 +2,7 @@
 
 import os
 import urllib.parse
+import json
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, JSONResponse
@@ -25,8 +26,12 @@ from backend.processing import categorize_email
 from backend.rag import query_docs
 from backend.llm import generate_response
 
-# --- Auth Configuration ---
-CLIENT_SECRETS_FILE = "backend/credentials.json" # Assumes client_secret.json is in the backend folder
+google_creds_json_str = os.getenv("GOOGLE_CREDENTIALS_JSON")
+if not google_creds_json_str:
+    raise ValueError("GOOGLE_CREDENTIALS_JSON environment variable not set.")
+CLIENT_CONFIG = json.loads(google_creds_json_str)
+
+
 SCOPES = [
     "openid",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -34,9 +39,18 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.send",
 ]
-REDIRECT_URI = "http://localhost:8000/auth/callback" # Must match Google Cloud Console
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # For local dev ONLY
+# ### CHANGE 2: Make URIs dynamic ###
+# This will use your live Render URL in production and localhost for local dev
+REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8000/auth/callback")
+FRONTEND_CALLBACK_URL = os.getenv("FRONTEND_CALLBACK_URL", "http://localhost:3000/auth/callback")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
+# ### CHANGE 3: Improve Security for Production ###
+# Only enable insecure transport for local development
+if "localhost" in REDIRECT_URI:
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    
+    
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
@@ -55,15 +69,15 @@ def get_user_credentials(user_google_id: str) -> Credentials:
     if not user:
         raise HTTPException(status_code=401, detail="User not found.")
     
-    flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
-    client_config = flow.client_config
+    # flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
+    # client_config = flow.client_config
 
     return Credentials.from_authorized_user_info(
         info={
             "refresh_token": user.refresh_token,
-            "client_id": client_config["client_id"],
-            "client_secret": client_config["client_secret"],
-            "token_uri": client_config["token_uri"],
+            "client_id": CLIENT_CONFIG["client_id"],
+            "client_secret": CLIENT_CONFIG["client_secret"],
+            "token_uri": CLIENT_CONFIG["token_uri"],
         },
         scopes=SCOPES
     )
@@ -71,7 +85,7 @@ def get_user_credentials(user_google_id: str) -> Credentials:
 # --- NEW: Authentication Endpoints ---
 @app.get("/login")
 async def login():
-    flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES, redirect_uri=REDIRECT_URI)
+    flow = Flow.from_client_config(CLIENT_CONFIG, scopes=SCOPES, redirect_uri=REDIRECT_URI)
     auth_url, _ = flow.authorization_url(prompt="consent", access_type="offline")
     return RedirectResponse(auth_url)
 
@@ -83,7 +97,7 @@ async def auth_callback(request: Request):
             status_code=400,
             content={"message": "Authentication failed or was cancelled by the user.", "error": error_details}
         )
-    flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES, redirect_uri=REDIRECT_URI)
+    flow = Flow.from_client_config(CLIENT_CONFIG, scopes=SCOPES, redirect_uri=REDIRECT_URI)
     flow.fetch_token(code=request.query_params.get("code"))
     creds = flow.credentials
     
@@ -98,14 +112,11 @@ async def auth_callback(request: Request):
     
     # NEW: Instead of returning JSON, we redirect back to the frontend
     # We will send the user's ID as a URL parameter
-    frontend_url = "http://localhost:3000/auth/callback"
-    params = urllib.parse.urlencode({"user_google_id": user.google_id})
+    params = urllib.parse.urlencode({"user_google_id": google_id}) # Use google_id from user_info
+    return RedirectResponse(url=f"{FRONTEND_CALLBACK_URL}?{params}")
     
-    return RedirectResponse(url=f"{frontend_url}?{params}")
+    # return RedirectResponse(url=f"{frontend_url}?{params}")
     
-    # In a real app, you would set a session cookie and redirect to your frontend dashboard
-    # For now, we return the user's Google ID so the frontend knows who they are
-    # return JSONResponse({"message": "Authentication successful", "user_google_id": user.google_id})
 
 # --- NEW: Endpoint to replace the scheduler ---
 @app.post("/sync-emails/{user_google_id}")
