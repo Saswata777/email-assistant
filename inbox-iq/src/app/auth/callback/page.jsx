@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react'; // Import Suspense from React
 import { useSearchParams, useRouter } from 'next/navigation';
 
-const AuthCallbackPage = () => {
+// Component that contains the actual logic using the hooks
+function CallbackProcessor() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -16,28 +17,37 @@ const AuthCallbackPage = () => {
       localStorage.setItem('currentUserGoogleId', userGoogleId);
       
       // 3. Redirect to the main dashboard page
-      router.push('/'); // Or '/dashboard' or wherever your main page is
+      router.push('/'); // Or '/dashboard'
     } else {
-      // Handle the case where the ID is missing, maybe redirect to an error page
+      // Handle the case where the ID is missing
       console.error("Authentication failed: No user ID provided in callback.");
       router.push('/login-error'); // Example error page
     }
-    
-    // We only want this effect to run once when the page loads.
   }, [searchParams, router]);
 
-  // This page can just show a simple loading message while it processes.
+  // This component doesn't need to render anything itself, it just handles logic
+  return null;
+}
+
+// The main page component that will be rendered
+const AuthCallbackPage = () => {
   return (
+    // Your loading UI
     <div style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#111827', // dark theme
+        backgroundColor: '#111827',
         color: 'white',
         fontFamily: 'sans-serif'
     }}>
       <p>Please wait, logging you in...</p>
+      
+      {/* Wrap the logic component in a Suspense boundary */}
+      <Suspense fallback={null}>
+        <CallbackProcessor />
+      </Suspense>
     </div>
   );
 };
