@@ -1,6 +1,6 @@
 # create_db.py
 
-from backend.db import engine, Base
+from db import engine, Base
 import os
 
 # This is a safety check. It's often better to handle DB creation/migration
