@@ -4,9 +4,12 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, F
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
 
-DB_PATH = os.getenv("DATABASE_PATH", "./inbox.db")
+# DELETE THE OLD DB_PATH and DATABASE_URL lines
+# DB_PATH = os.getenv("DATABASE_PATH", "./inbox.db")
+# DATABASE_URL = f"sqlite:///{DB_PATH}"
 
-DATABASE_URL = f"sqlite:///{DB_PATH}"
+# ADD THIS NEW LINE
+DATABASE_URL = os.getenv("DATABASE_URL") # This will get the postgres URL from Render
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
