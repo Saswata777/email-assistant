@@ -17,7 +17,8 @@ import google.auth.exceptions
 
 # --- Your existing backend imports ---
 from backend.db import (
-    init_db, create_or_update_user, get_user_by_google_id,
+    # init_db, 
+    create_or_update_user, get_user_by_google_id,
     get_emails, get_email_by_id, mark_as_sent, save_email
 )
 from backend.gmail_client import fetch_latest_emails, send_email_reply
@@ -53,7 +54,7 @@ if "localhost" in REDIRECT_URI:
     
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    # init_db()
     # DELETED: The old scheduler thread is gone
     yield
 
