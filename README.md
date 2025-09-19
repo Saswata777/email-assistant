@@ -23,6 +23,10 @@ It leverages **Natural Language Processing (NLP)** and **Retrieval-Augmented Gen
   Periodically checks for new emails via a background scheduler.
 
 ---
+Video Representation:
+
+https://drive.google.com/file/d/15wdpquJZ-BPKimzi3yWKIdABFHEPj9Mk/view?usp=sharing
+---
 
 ## 📂 Project Structure
 
