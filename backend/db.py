@@ -46,10 +46,10 @@ class Email(Base):
     received_at = Column(DateTime, default=datetime.utcnow)
     status = Column(String, default="pending")  # pending, approved, sent
 
-# def init_db():
-#     """Create tables in the database"""
-#     # Base.metadata.create_all(bind=engine)
-#     Base.metadata.create_all(bind=engine, checkfirst=True)
+def init_db():
+    """Create tables in the database"""
+    # Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
     
 
 # 3. NEW: Functions to manage users
